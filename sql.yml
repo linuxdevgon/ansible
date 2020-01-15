@@ -1,0 +1,49 @@
+
+---
+- hosts: apache
+  become: true
+  vars_files:
+    - vars/default.yml
+
+  tasks:
+    - name: Install prerequisites
+      apt: name={{ item }} update_cache=yes state=latest force_apt_get=yes
+      loop: [ 'aptitude' ]
+
+  # Configuration
+    - name: Install  Packages
+      apt: name={{ item }} update_cache=yes state=latest
+      loop: [  'mysql-server', 'python3-pymysql', 'php', 'php-mysql',  ]
+
+
+  # MySQL Configuration
+    - name: Sets the root password
+      mysql_user:
+        name: root
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        password: "{{ mysql_root_password }}"
+
+    - name: Removes all anonymous user accounts
+      mysql_user:
+        name: ''
+        host_all: yes
+        state: absent
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+
+    - name: Removes the MySQL test database
+      mysql_db:
+        name: test
+        state: absent
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+
+
+
+  # PHP Info Page
+    - name: Sets Up PHP Info Page
+      template:
+        src: "files/info.php.j2"
+#        dest: "/var/www/{{ http_host }}/info.php"
+
+

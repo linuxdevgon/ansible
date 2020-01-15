@@ -1,0 +1,8 @@
+---
+- name: "massage"
+  hosts: apache
+  become: yes
+
+  tasks:
+   - name: Install Apache2
+     apt: name=apache2 update_cache=yes state=latest

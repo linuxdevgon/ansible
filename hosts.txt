@@ -1,0 +1,6 @@
+[apache]
+ubuntu2 ansible_host=192.168.2.2
+[mysql_php]
+ubuntu3 ansible_host=192.168.2.3
+[nginx]
+ubuntu4 ansible_host=192.168.2.4
